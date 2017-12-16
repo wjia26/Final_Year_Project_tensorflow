@@ -1,0 +1,51 @@
+import tflearn
+from tflearn.layers.conv import conv_2d, max_pool_2d
+from tflearn.layers.core import input_data, dropout, fully_connected
+from tflearn.layers.estimator import regression
+from tflearn.layers.normalization import batch_normalization
+
+import tensorflow as tf
+tf.reset_default_graph()
+
+convnet = input_data(shape=[None, IMG_SIZE, IMG_SIZE, 1], name='input1') 
+
+convnet = conv_2d(convnet, 64, 5, activation='relu')
+convnet = max_pool_2d(convnet, 5)
+convnet = batch_normalization (convnet)
+
+convnet = conv_2d(convnet, 128, 5, activation='relu')
+convnet = max_pool_2d(convnet, 5)
+convnet = batch_normalization (convnet)
+convnet = dropout(convnet, 0.7)
+
+convnet = conv_2d(convnet, 256, 5, activation='relu')
+convnet = max_pool_2d(convnet, 5)
+convnet = batch_normalization (convnet)
+
+convnet = conv_2d(convnet, 256, 5, activation='relu')
+convnet = max_pool_2d(convnet, 5)
+convnet = batch_normalization (convnet)
+convnet = dropout(convnet, 0.7)
+
+convnet = fully_connected(convnet, 512, activation='relu')
+convnet = dropout(convnet, 0.8)
+
+convnet = fully_connected(convnet, 1024, activation='relu')
+convnet = dropout(convnet, 0.8)
+
+################SECOND BRANCH FOR ANGLE
+
+anglenet=input_data(shape=[None,1], name='input2') 
+
+anglenet= fully_connected(anglenet, 128, activation='relu')
+anglenet = dropout(anglenet, 0.8)
+
+anglenet= fully_connected(anglenet, 1024, activation='relu')
+anglenet = dropout(anglenet, 0.8)
+
+mergenet= tflearn.layers.merge_ops.merge([anglenet,convnet], 'elemwise_sum', axis=1, name='Merge')
+
+mergenet = fully_connected(mergenet, 2, activation='softmax')
+mergenet = regression(mergenet, optimizer='adam', learning_rate=LR, loss='categorical_crossentropy', name='targets')
+
+model = tflearn.DNN(mergenet, tensorboard_dir='C:\Tensorboard_logs\FYP17_yangerz\log')

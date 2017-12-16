@@ -1,0 +1,2 @@
+model_checkpoint_path: "C:\\Users\\William Jiang\\Documents\\FYP17_tensorflow_demo\\model_image_prediction\\FYP17_item_classifier-0.001_V7.model"
+all_model_checkpoint_paths: "C:\\Users\\William Jiang\\Documents\\FYP17_tensorflow_demo\\model_image_prediction\\FYP17_item_classifier-0.001_V7.model"
